@@ -22,7 +22,7 @@ const postRoute  = require("./routes/Post")
 
 //cors
 app.use(cors({
-  origin : ["https://deploy-quickpost-frontend.vercel.app/"],
+  origin : ["https://deploy-quickpost-frontend.vercel.app"],
   methods : ["POST","GET","DELETE","PUT"],
   credentials : true
 }))
