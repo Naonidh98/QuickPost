@@ -51,17 +51,22 @@ app.use("/api/v1/user/profile", userRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/post", postRoute);
 
+/*
 //static files
 app.use(express.static(path.join(__dirname,"./client/build")));
 app.get("*",function(req,res){
   res.sendFile(path.join(__dirname,"./client/build/index.html"))
-})
-
+})*/
 
 //server listen
 app.listen(PORT, () => {
   console.log("Server live at  : " + PORT + " 👍");
 });
+
+app.get("/", (req, res) => {
+    res.json("Hello");
+})
+
 
 //db-connection
 dbConnect();
