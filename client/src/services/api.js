@@ -1,56 +1,58 @@
+const BASE_URL = 'http://quickpostapp.onrender.com/api/v1';
+
 export const auth = {
-  signup: "/auth/signup",
-  login: "/auth/login",
-  verifyEmail: "/auth/sendotp",
-  resetPasswordToken: "/auth/reset-password-token",
-  resetPassword: "/auth/reset-password",
+  signup: BASE_URL + "/auth/signup",
+  login: BASE_URL + "/auth/login",
+  verifyEmail: BASE_URL + "/auth/sendotp",
+  resetPasswordToken: BASE_URL + "/auth/reset-password-token",
+  resetPassword: BASE_URL + "/auth/reset-password",
 };
 
 export const profile = {
-  change_dp: "/user/profile/dp-update",
-  change_bg: "/user/profile/bg-update",
-  update_profile: "/user/profile/profile-update",
+  change_dp: BASE_URL + "/user/profile/dp-update",
+  change_bg: BASE_URL + "/user/profile/bg-update",
+  update_profile: BASE_URL + "/user/profile/profile-update",
 };
 
 export const category = {
-  get_Category: "/admin/category/all",
-  create_Category: "/admin/category/create",
-  add_category: "/user/profile/category/add",
-  remove_category: "/user/profile/category/remove",
+  get_Category: BASE_URL + "/admin/category/all",
+  create_Category: BASE_URL + "/admin/category/create",
+  add_category : BASE_URL + "/user/profile/category/add",
+  remove_category : BASE_URL + "/user/profile/category/remove",
 };
 
 export const post = {
-  create_Post: "/post/create",
-  update_Post: "/post/update",
-  upload_Image: "/post/addMedia",
-  delete_Image: "/post/removeMedia",
-  upload_Video: "/post/addVideoMedia",
-  delete_Video: "/post/removeMedia",
-  publish_post: "/post/publish",
-  draft_post: "/post/draft",
-  fetch_user_posts: "/post/all",
-  get_category_post: "/post/category/pos",
-  get_home_feed_post: "/post/public",
-  like_post: "/post/like",
-  dislike_post: "/post/dislike",
-  remove_image_post: "/post/removeMedia",
-  delete_post: "/post/delete",
+  create_Post: BASE_URL + "/post/create",
+  update_Post: BASE_URL + "/post/update",
+  upload_Image: BASE_URL + "/post/addMedia",
+  delete_Image: BASE_URL + "/post/removeMedia",
+  upload_Video: BASE_URL + "/post/addVideoMedia",
+  delete_Video: BASE_URL + "/post/removeMedia",
+  publish_post: BASE_URL + "/post/publish",
+  draft_post: BASE_URL + "/post/draft",
+  fetch_user_posts: BASE_URL + "/post/all",
+  get_category_post : BASE_URL + "/post/category/pos",
+  get_home_feed_post : BASE_URL + "/post/public",
+  like_post : BASE_URL + "/post/like",
+  dislike_post : BASE_URL + "/post/dislike",
+  remove_image_post : BASE_URL + "/post/removeMedia",
+  delete_post : BASE_URL + "/post/delete",
 };
 
 export const account = {
-  search_account: "/user/profile/find",
-  accout_details: "/user/profile/detail",
+  search_account: BASE_URL + "/user/profile/find",
+  accout_details: BASE_URL + "/user/profile/detail",
 };
 
 export const connection = {
-  send_req: "/user/req/send",
-  accept_req: "/user/req/accept",
-  reject_req: "/user/req/reject",
-  all_req: "/user/req/all",
-  find_connections: "/user/req/followers/all",
+  send_req: BASE_URL + "/user/req/send",
+  accept_req: BASE_URL + "/user/req/accept",
+  reject_req: BASE_URL + "/user/req/reject",
+  all_req: BASE_URL + "/user/req/all",
+  find_connections : BASE_URL + "/user/req/followers/all"
 };
 
-export const admin = {
-  fetch_data: "/admin/data",
-  category_create: "/admin/category/create",
-};
+export const admin={
+  fetch_data : BASE_URL + "/admin/data",
+  category_create : BASE_URL + "/admin/category/create",
+}
