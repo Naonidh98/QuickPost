@@ -1,0 +1,68 @@
+export const sidebarLinks = [
+  {
+    id: 1,
+    name: "My Profile",
+    path: "/dashboard/Profile",
+    icon: "VscAccount",
+    type: "All",
+  },
+  {
+    id: 2,
+    name: "Dashboard",
+    path: "/dashboard/Admin",
+    type: "Admin",
+    icon: "VscDashboard",
+  },
+  {
+    id: 3,
+    name: "My Posts",
+    path: "/dashboard/posts/all",
+    type: "Client",
+    icon: "VscVm",
+  },
+  {
+    id: 4,
+    name: "Create Post",
+    path: "/dashboard/post/create",
+    type: "Client",
+    icon: "VscAdd",
+  },
+  {
+    id: 5,
+    name: "Friends",
+    path: "/dashboard/friends",
+    type: "Client",
+    icon: "VscMortarBoard",
+  },
+  {
+    id: 6,
+    name: "Requests",
+    path: "/dashboard/friend/req",
+    type: "Client",
+    icon: "VscHeart",
+  },
+  {
+    id: 10,
+    name: "Category",
+    path: "/dashboard/category/create",
+    type: "Admin",
+    icon: "VscAdd",
+  },
+  {
+    id: 7,
+  },
+  {
+    id: 8,
+    name: "Setting",
+    path: "/dashboard/setting",
+    type: "All",
+    icon: "VscGear",
+  },
+  {
+    id: 9,
+    name: "Logout",
+    path: "/",
+    type: "All",
+    icon: "VscSignOut",
+  },
+];
