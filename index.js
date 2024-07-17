@@ -33,7 +33,6 @@ app.use(
   })
 );
 
-//heroku
 const PORT = process.env.PORT || 3000;  
 
 //mounting routes
@@ -44,12 +43,12 @@ app.use("/api/v1/user/profile", userRoute);
 app.use("/api/v1/admin", adminRoute);
 app.use("/api/v1/post", postRoute);
 
-
 //static files
 app.use(express.static(path.join(__dirname,"./client/build")));
 app.get("*",function(req,res){
   res.sendFile(path.join(__dirname,"./client/build/index.html"))
 })
+
 
 //server listen
 app.listen(PORT, () => {

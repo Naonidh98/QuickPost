@@ -18,7 +18,7 @@ exports.isauth = async (req, res, next) => {
    // console.log("token:", token);
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decode);
+   // console.log(decode);
 
     if (!decode) {
       return res.json({
