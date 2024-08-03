@@ -4,16 +4,36 @@ import {
   ProfileCard,
   FriendsCard,
   CustomButton,
+  TextInput,
+  Loading,
+  PostCard,
 } from "../components/index";
-import { user, requests, friends, suggest } from "../../data/dummyData";
+import { user, requests, friends, suggest, posts } from "../../data/dummyData";
 import { NoProfile } from "../assets/index";
-import { BsPersonFillAdd } from "react-icons/bs";
+
+import { BsPersonFillAdd, BsFiletypeGif } from "react-icons/bs";
+import { BiImages, BiSolidVideo } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 const Home = () => {
   //todo : get user data from redux
 
   const [friendRequest, setFriendRequest] = useState(requests);
   const [suggestedFriends, setSuggestedFriends] = useState(suggest);
+  const [errMsg, setErrMsg] = useState("");
+  const [file, setFile] = useState(null);
+  const [posting, setPosting] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    console.log(data);
+  };
 
   return (
     <div className="home w-full px-0 lg:px-10 pb-20 2xl:py:40 bg-richblack-900 h-screen overflow-hidden">
@@ -28,8 +48,135 @@ const Home = () => {
         </div>
 
         {/* Center section */}
-        <div className="text-white flex-1 h-full bg-richblack-800 px-4 flex flex-col gap-6 overflow-y-auto">
-          center
+        <div className="text-white rounded-lg flex-1 h-full bg-richblack-800 px-4 flex flex-col gap-6 overflow-y-auto">
+          <form
+            className="bg-richblack-800 px-4 rounded-lg"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="w-full flex items-center gap-2 py-4 border-b border-[#66666645]">
+              <img
+                src={user?.profileUrl ?? NoProfile}
+                alt="User img"
+                className="w-14 h-14 rounded-full object-cover"
+              />
+              <TextInput
+                styles="w-full rounded-full py-5 bg-[#2d333e]"
+                placeholder="what's on your mind..."
+                name="description"
+                register={register("description", {
+                  required: "Write something about post",
+                })}
+                error={errors.description ? errors.description.message : ""}
+              />
+              {errMsg?.message && (
+                <span
+                  role="alert"
+                  className={`text-sm ${
+                    errMsg.status === "failed"
+                      ? "text-[#f64949fe]"
+                      : "text-[#2ba150fe]"
+                  } mt-0.5`}
+                >
+                  {errMsg.message}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between">
+              {/* Media icons  : images*/}
+              <div className="flex items-center justify-between py-4">
+                <label
+                  htmlFor="imageUpload"
+                  className="flex items-center gap-1 text-base cursor-pointer text-white/70 hover:text-white transition-colors"
+                >
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      setFile(e.target.files[0]);
+                    }}
+                    className="hidden"
+                    id="imageUpload"
+                    data-max-size="5120"
+                    accept=".jpeg, .png, .jpg"
+                  />
+                  <BiImages />
+                  <span>Image</span>
+                </label>
+              </div>
+              {/* Media icons  : video*/}
+              <div className="flex items-center justify-between py-4">
+                <label
+                  htmlFor="videoUpload"
+                  className="flex items-center gap-1 text-base cursor-pointer  text-white/70 hover:text-white transition-colors"
+                >
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      setFile(e.target.files[0]);
+                    }}
+                    className="hidden"
+                    id="videoUpload"
+                    data-max-size="5120"
+                    accept=".mp4,.wav"
+                  />
+                  <BiSolidVideo />
+                  <span>Video</span>
+                </label>
+              </div>
+              {/* Media icons  : gif*/}
+              <div className="flex items-center justify-between py-4">
+                <label
+                  htmlFor="vgifUpload"
+                  className="flex items-center gap-1 text-base cursor-pointer  text-white/70 hover:text-white transition-colors"
+                >
+                  <input
+                    type="file"
+                    onChange={(e) => {
+                      setFile(e.target.files[0]);
+                    }}
+                    className="hidden"
+                    id="vgifUpload"
+                    data-max-size="5120"
+                    accept=".gif"
+                  />
+                  <BsFiletypeGif />
+                  <span>Gif</span>
+                </label>
+              </div>
+
+              {/* Button */}
+              {posting ? (
+                <Loading />
+              ) : (
+                <div>
+                  <CustomButton
+                    type={"submit"}
+                    title={"Post"}
+                    containerStyles={
+                      "bg-[#4444a4] text-white py-1 px-6 rounded-full font-semibold text-sm"
+                    }
+                  />
+                </div>
+              )}
+            </div>
+          </form>
+
+          {/* posts */}
+          {loading ? (
+            <Loading />
+          ) : posts?.length > 0 ? (
+            <div>
+              {posts.map((post, index) => (
+                <div key={index}>
+                  <PostCard post={post} user={user} deletePost={()=>{}}  likePost={()=>{}}/>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex w-full h-full items-center justify-center">
+              <p className="text-lg">No Post Available</p>
+            </div>
+          )}
         </div>
 
         {/* Right section */}
