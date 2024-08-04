@@ -7,6 +7,7 @@ import {
   TextInput,
   Loading,
   PostCard,
+  EditProfile,
 } from "../components/index";
 import { user, requests, friends, suggest, posts } from "../../data/dummyData";
 import { NoProfile } from "../assets/index";
@@ -168,7 +169,12 @@ const Home = () => {
             <div>
               {posts.map((post, index) => (
                 <div key={index}>
-                  <PostCard post={post} user={user} deletePost={()=>{}}  likePost={()=>{}}/>
+                  <PostCard
+                    post={post}
+                    user={user}
+                    deletePost={() => {}}
+                    likePost={() => {}}
+                  />
                 </div>
               ))}
             </div>
