@@ -1,15 +1,18 @@
 import React from "react";
 import { TbSocial } from "react-icons/tb";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { TextInput, CustomButton } from "../components/index";
 import { IoMdNotifications } from "react-icons/io";
 
+import { logout } from "../services/operations/authAPI";
+
 const TopBar = () => {
   //todo : get user
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -61,7 +64,9 @@ const TopBar = () => {
         {/* todo : logout btn handler */}
         <div>
           <CustomButton
-            onClick={() => {}}
+            onClick={() => {
+              dispatch(logout(navigate));
+            }}
             title="Log out"
             containerStyles="text-sm px-4 md:px-6 py-1 md:py-2 bg-[#0444a4] hover:bg-richblack-800 shadow-md transition-color border border-[#666] rounded-full"
           />

@@ -4,12 +4,21 @@ import { Outlet } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 
 //import pages
-import { Home, Login, Profile, Register, ResetPassword } from "./pages/index";
+import { Home, Login, Profile, Register, ResetPassword ,EmailVerification} from "./pages/index";
 import { EditProfile } from "./components/index";
+import { useSelector } from "react-redux";
 
 //function to check user logged-in or not.
 function Layout() {
-  return <Outlet />;
+  const { user ,token} = useSelector((state) => state.user);
+  console.log("user : ", user);
+  console.log("token : ", token);
+
+  if (user && token) {
+    return <Outlet />;
+  } else {
+    return <Login />;
+  }
 }
 
 const App = () => {
@@ -25,6 +34,7 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/user/verify/:email/:token" element={<EmailVerification />} />
       </Routes>
     </div>
   );

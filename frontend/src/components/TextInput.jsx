@@ -10,15 +10,17 @@ const TextInput = ({
   name,
   error,
   ref,
+  id
 }) => {
   return (
     <div className="w-full flex flex-col mt-2">
       {label && (
-        <p className={`text-ascent-2 text-sm mb-2 ${labelStyles}`}>{label}</p>
+        <label htmlFor={id} className={`text-ascent-2 text-sm mb-2 ${labelStyles}`}>{label}</label>
       )}
 
       <div>
         <input
+          id={id}
           type={type}
           name={name}
           placeholder={placeholder}

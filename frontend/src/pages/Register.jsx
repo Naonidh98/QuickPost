@@ -12,6 +12,11 @@ import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
+import { toast } from "react-hot-toast";
+
+//API
+import { registerEmail } from "../services/operations/authAPI";
+
 const Register = () => {
   const {
     register,
@@ -27,7 +32,18 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
-    console.log(data);
+    //password length is less than 8
+    if (data.password.length < 8) {
+      toast.error("Password length is less than 8!");
+      return;
+    }
+    //pass not match
+    if (data.password !== data.cPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    } else {
+      dispatch(registerEmail(data));
+    }
   };
 
   return (
@@ -55,6 +71,7 @@ const Register = () => {
             <div className="w-full flex flex-col lg:flex-row gap-1 md:gap-2">
               <TextInput
                 name="firstName"
+                id="firstName"
                 placeholder="Enter your first name"
                 label="First Name"
                 labelStyles="text-white ml-2 font-semibold"
@@ -66,7 +83,8 @@ const Register = () => {
                 error={errors.firstName ? errors.firstName.message : ""}
               />
               <TextInput
-                name="lasttName"
+                name="lastName"
+                id="lastName"
                 placeholder="Enter your last name"
                 label="Last Name"
                 labelStyles="text-white ml-2 font-semibold"
@@ -81,6 +99,7 @@ const Register = () => {
 
             <TextInput
               name="email"
+              id="email"
               placeholder="email@example.com"
               label="Email Address"
               labelStyles="text-white ml-2 font-semibold"
@@ -97,6 +116,7 @@ const Register = () => {
             <div className="w-full flex flex-col lg:flex-row gap-1 md:gap-2">
               <TextInput
                 name="password"
+                id="password"
                 placeholder="Enter your password"
                 label="Password"
                 labelStyles="text-white ml-2 font-semibold"
@@ -109,6 +129,7 @@ const Register = () => {
               />
               <TextInput
                 name="password"
+                id="cpassword"
                 placeholder="Enter your password"
                 label="Confirm Password"
                 labelStyles="text-white ml-2 font-semibold"

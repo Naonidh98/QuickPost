@@ -24,7 +24,7 @@ exports.auth = async (req, res, next) => {
     } catch (err) {
       return res.status(500).json({
         success: false,
-        message: "Invalid token",
+        message: "Invalid token, Login again",
         error: err.message,
       });
     }
