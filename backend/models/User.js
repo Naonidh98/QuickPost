@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     },
   ],
   verified: {
-    type: Boolean,
+    type: String,
     required: true,
   },
   createdAt : {

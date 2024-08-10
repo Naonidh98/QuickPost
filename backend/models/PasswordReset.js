@@ -1,6 +1,6 @@
 const mongoose  = require("mongoose");
 
-const passwordResetSchema  = mongoose.Schema({
+const passwordResetSchema  =new  mongoose.Schema({
     userId : {
         type : String,
         unique : true,

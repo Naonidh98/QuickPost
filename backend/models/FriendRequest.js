@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const friendRequestSchema = mongoose.Schema({
+const friendRequestSchema =new  mongoose.Schema({
   requestTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -12,6 +12,7 @@ const friendRequestSchema = mongoose.Schema({
   },
   createdAt: {
     type: Date,
+    default : Date.now()
   },
 });
 

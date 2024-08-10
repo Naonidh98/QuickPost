@@ -1,7 +1,7 @@
 const mongoose  = require("mongoose");
 
-const verificationSchema  = mongoose.Schema({
-    userId : {
+const verificationSchema  = new mongoose.Schema({
+    email : {
         type : String
     },
     token : {
