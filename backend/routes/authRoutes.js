@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-const { register, login } = require("../controllers/authController");
+const {
+  register,
+  login,
+  validateToken,
+} = require("../controllers/authController");
 const {
   emailVerification,
+  resendEmailVerification,
 } = require("../controllers/emailVerificationController");
 
 const { auth } = require("../middlewares/auth");
@@ -16,6 +21,10 @@ router.post("/login", login);
 
 //email verification
 router.post("/emailVerification/:email/:token", emailVerification);
+router.post("/email/verify/resend", resendEmailVerification);
+
+//verify token
+router.post("/token/verify", validateToken);
 
 //test auth midd
 router.post("/test", auth, (req, res) => {

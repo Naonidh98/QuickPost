@@ -7,11 +7,23 @@ import moment from "moment";
 import { useForm } from "react-hook-form";
 import { TextInput, Loading, CustomButton } from "../components/index";
 import { postComments } from "../../data/dummyData";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deletePost,
+  likePostHandler,
+  commentPostHandler,
+} from "../services/operations/postAPI";
+
+
 
 /// comment form
-const CommentForm = ({ user, id, replyAt, getComments }) => {
+
+const CommentForm = ({ user, id, replyAt, getComments, postId, setData }) => {
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
+
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.user);
 
   const {
     register,
@@ -20,7 +32,15 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data);
+    console.log("comment", data.comment);
+
+    dispatch(
+      commentPostHandler(
+        token,
+        { comment: data?.comment, postId: postId },
+        setData
+      )
+    );
   };
 
   return (
@@ -32,7 +52,6 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
           className="w-10 h-10 rounded-full object-cover"
         />
 
-        {/* input tag */}
         <TextInput
           name="comment"
           styles={"w-full rounded-full py-3 bg-richblack-900"}
@@ -42,7 +61,7 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
           })}
           error={errors.comment ? errors.comment.message : ""}
         />
-        {/* error message */}
+
         {errMsg?.message && (
           <span
             className={`text-sm ${
@@ -56,7 +75,6 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
         )}
       </div>
       <div className="flex flex-end justify-end pb-2">
-        {/*button*/}
         {loading ? (
           <Loading />
         ) : (
@@ -74,6 +92,7 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
 };
 
 //reply card
+
 const ReplyCard = ({ reply, user, handleLike }) => {
   return (
     <div className="w-full py-3">
@@ -102,9 +121,7 @@ const ReplyCard = ({ reply, user, handleLike }) => {
         <div className="mt-2 flex gap-6">
           <p
             className="flex gap-2 items-center text-base cursor-pointer"
-            onClick={() => {
-              handleLike;
-            }}
+            onClick={() => {}}
           >
             {reply?.likes?.includes(user?._id) ? (
               <BiSolidLike size={20} />
@@ -119,13 +136,16 @@ const ReplyCard = ({ reply, user, handleLike }) => {
   );
 };
 
-const PostCard = ({ post, user, deletePost, likePost }) => {
+const PostCard = ({ post, user, delete_Post, likePost }) => {
   const [showAll, setShowAll] = useState(0);
   const [showReply, setShowReply] = useState(0);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState(null);
   const [loading, setLoading] = useState(false);
   const [replyComments, setReplyComments] = useState(0);
   const [showComments, setShowComments] = useState(0);
+
+  const [data, setData] = useState(post);
+  console.log("data", data);
 
   const getComments = async () => {
     setReplyComments(0);
@@ -137,12 +157,16 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
     getComments();
   }, []);
 
+  const { token } = useSelector((state) => state.user);
+
+  const dispatch = useDispatch();
+
   return (
     <div className="text-white mb-2 bg-richblack-700 p-4 rounded-xl">
       {/* avatar */}
       <div className="flex gap-4 items-center mb-2">
         {/* Profile img */}
-        <Link to={"/profile/" + post?.userId?._id}>
+        <Link>
           <img
             src={post?.userId?.profileUrl ?? NoProfile}
             alt={post?.userId?.firstName}
@@ -153,7 +177,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
         {/* user name*/}
         <div className="w-full flex justify-between">
           <div>
-            <Link to={"/profile/" + post?.userId?._id} className="">
+            <Link className="">
               <p className="font-medium text-lg ">
                 {`${post?.userId?.firstName} ${post?.userId?.lastName}`}
               </p>
@@ -195,36 +219,44 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
             ))}
         </p>
 
-        {/* media */}
-        <img src={post?.image} alt="" className="w-full mt-2 rounded-lg" />
+        {/* media  */}
+        
+        <img src={post?.image} alt="" className="w-full mt-2 rounded-lg" loading="lazy"/>
       </div>
 
       {/* likes  + comment*/}
       <div className="mt-4 flex justify-between items-center px-3 py-2 text-base border-t border-[#66666645]">
-        <p className="flex gap-2 items-center text-base cursor-pointer">
-          {post?.likes?.includes(user?._id) ? (
-            <BiSolidLike size={20} className="text-blue-100" />
-          ) : (
-            <BiLike size={20} />
-          )}
-          {post?.likes.length} Likes
-        </p>
+        <div
+          className="flex gap-2 items-center text-base cursor-pointer"
+          onClick={() => {
+            dispatch(likePostHandler(token, { postId: data?._id }, setData));
+          }}
+        >
+          <BiLike size={20} />
+          {data?.likes.length} Likes
+        </div>
 
         <p
           className="flex gap-2 items-center text-base cursor-pointer"
           onClick={() => {
-            setShowComments(post?._id);
+            if (showComments === null) {
+              setShowComments(post?._id);
+            } else {
+              setShowComments(null);
+            }
           }}
         >
           <BiComment size={20} />
-          {post?.comments?.length} Comments
+          {data?.comments?.length} Comments
         </p>
 
         {/* delete */}
         {user?._id === post?.userId?._id && (
           <div
             className="flex gap-1 items-center text-base cursor-pointer"
-            onClick={() => {}}
+            onClick={() => {
+              dispatch(deletePost(token, { postId: post?._id }));
+            }}
           >
             <MdOutlineDeleteOutline size={20} />
             <span>Delete</span>
@@ -233,25 +265,27 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
       </div>
 
       {/* Comments */}
-      <div>
+      <div className="bg-richblack-900 px rounded-lg px-2">
         {showComments === post?._id && (
-          <div className="w-full mt-4 border-t border-[#66666645] pt-4">
+          <div className="w-full overflow-auto h-96  flex flex-col-reverse mt-4 border-t border-[#66666645] pt-4">
             <CommentForm
               user={user}
               id={post?._id}
               getComments={() => {
                 getcomments(post?._id);
               }}
+              postId={data?._id}
+              setData={setData}
             />
 
             {/* all comment of this post */}
             {loading ? (
               <Loading />
-            ) : comments.length > 0 ? (
+            ) : data?.comments?.length > 0 ? (
               <div>
-                {comments.map((comment) => (
-                  <div key={comment?._id} className="w-full py-2">
-                    <div className="flex gap-3 items-center mb-1">
+                {data?.comments.map((comment) => (
+                  <div key={comment?._id} className="w-full p-2 my-4">
+                    <div className="flex gap-3 items-center">
                       {/*image  + bio */}
 
                       <Link to={"/profile/" + comment?.userId?._id}>
@@ -266,7 +300,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
                           {`${comment?.userId?.firstName} ${comment?.userId?.lastName}`}
                         </p>
                       </Link>
-                      <span className="text-sm text-white-90">
+                      <span className="text-sm text-white-90 ">
                         {moment(comment?.createdAt ?? "2023-05-2023").fromNow()}
                       </span>
                     </div>
@@ -274,70 +308,6 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
                     {/* desc */}
                     <div className="ml-12">
                       <p className="pl-1">{comment?.comment}</p>
-
-                      <div className="mt-2 flex gap-6">
-                        <p className="flex gap-2 items-center text-base cursor-pointer">
-                          {comment?.likes?.includes(user?._id) ? (
-                            <BiSolidLike size={14} className="text-blue-50" />
-                          ) : (
-                            <BiLike size={14} />
-                          )}
-                          <span className="text-sm">{`${comment?.likes.length} Likes`}</span>
-                        </p>
-                        <span
-                          className="text-blue-100 cursor-pointer"
-                          onClick={() => {
-                            setReplyComments(comment?._id);
-                          }}
-                        >
-                          Reply
-                        </span>
-                      </div>
-
-                      {/* reply on this comment  */}
-                      {replyComments === comment?._id && (
-                        <CommentForm
-                          user={user}
-                          id={comment?._id}
-                          replyAt={comment?.from}
-                          getComments={() => {
-                            getComments(post?._id);
-                          }}
-                        />
-                      )}
-                    </div>
-
-                    {/* replies */}
-                    <div
-                      className="py-2 px-8 mt-6 cursor-pointer"
-                      onClick={() => {
-                        setShowReply(
-                          showReply === comment?.replies?._id
-                            ? 0
-                            : comment?.replies?._id
-                        );
-                      }}
-                    >
-                      {comment?.replies?.length > 0 && (
-                        <p>Show Replies ({comment?.replies?.length})</p>
-                      )}
-
-                      {showReply === comment?.replies._id &&
-                        comment?.replies?.map((reply) => (
-                          <ReplyCard
-                            reply={reply}
-                            user={user}
-                            key={reply._id}
-                            handleLike={() => {
-                              handleLike(
-                                "/post/like-comment/" +
-                                  comment?._id +
-                                  "/" +
-                                  reply?._id
-                              );
-                            }}
-                          />
-                        ))}
                     </div>
                   </div>
                 ))}

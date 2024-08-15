@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TopBar,
   ProfileCard,
@@ -9,22 +9,40 @@ import {
   PostCard,
   EditProfile,
 } from "../components/index";
-import { user, requests, friends, suggest, posts } from "../../data/dummyData";
+import { friends } from "../../data/dummyData";
 import { NoProfile } from "../assets/index";
 
 import { BsPersonFillAdd, BsFiletypeGif } from "react-icons/bs";
 import { BiImages, BiSolidVideo } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  getFrndRequests,
+  getSuggestedfrnd,
+  sendFriendRequest,
+  acceptFriendRequest,
+  rejectFriendRequest,
+  getMyfrnds,
+} from "../services/operations/userAPI";
+
+import { createPost, getAllPostsHome } from "../services/operations/postAPI";
+
 const Home = () => {
   //todo : get user data from redux
+  const { user, token } = useSelector((state) => state.user);
 
-  const [friendRequest, setFriendRequest] = useState(requests);
-  const [suggestedFriends, setSuggestedFriends] = useState(suggest);
+  const dispatch = useDispatch();
+
+  const [suggestedFriends, setSuggestedFriends] = useState([]);
   const [errMsg, setErrMsg] = useState("");
   const [file, setFile] = useState(null);
   const [posting, setPosting] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [requests, setRequests] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [frnd, setFrnds] = useState(user?.friends);
 
   const {
     register,
@@ -33,8 +51,18 @@ const Home = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log(data);
+    if (file) {
+      data.image = file;
+    }
+    dispatch(createPost(data, token, setLoading, setPosts));
   };
+
+  useEffect(() => {
+    dispatch(getFrndRequests(token, setRequests));
+    dispatch(getSuggestedfrnd(token, setSuggestedFriends));
+    dispatch(getAllPostsHome(token, setLoading, setPosts));
+    dispatch(getMyfrnds(token, setFrnds));
+  }, []);
 
   return (
     <div className="home w-full px-0 lg:px-10 pb-20 2xl:py:40 bg-richblack-900 h-screen overflow-hidden">
@@ -44,8 +72,8 @@ const Home = () => {
       <div className="w-full flex gap-2 lg:gap-4 pt-5 pb-10 h-full">
         {/* Left section */}
         <div className="hidden w-1/3 lg:w-1/4 h-full md:flex flex-col gap-6 overflow-y-auto">
-          <ProfileCard user={user} />
-          <FriendsCard friends={user?.friends} />
+          <ProfileCard user={user} frnd={frnd} />
+          <FriendsCard friends={frnd} />
         </div>
 
         {/* Center section */}
@@ -104,8 +132,8 @@ const Home = () => {
                   <span>Image</span>
                 </label>
               </div>
-              {/* Media icons  : video*/}
-              <div className="flex items-center justify-between py-4">
+
+              {/* <div className="flex items-center justify-between py-4">
                 <label
                   htmlFor="videoUpload"
                   className="flex items-center gap-1 text-base cursor-pointer  text-white/70 hover:text-white transition-colors"
@@ -124,7 +152,7 @@ const Home = () => {
                   <span>Video</span>
                 </label>
               </div>
-              {/* Media icons  : gif*/}
+              
               <div className="flex items-center justify-between py-4">
                 <label
                   htmlFor="vgifUpload"
@@ -143,7 +171,7 @@ const Home = () => {
                   <BsFiletypeGif />
                   <span>Gif</span>
                 </label>
-              </div>
+              </div>  */}
 
               {/* Button */}
               {posting ? (
@@ -162,27 +190,31 @@ const Home = () => {
             </div>
           </form>
 
-          {/* posts */}
-          {loading ? (
-            <Loading />
-          ) : posts?.length > 0 ? (
-            <div>
-              {posts.map((post, index) => (
-                <div key={index}>
-                  <PostCard
-                    post={post}
-                    user={user}
-                    deletePost={() => {}}
-                    likePost={() => {}}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex w-full h-full items-center justify-center">
-              <p className="text-lg">No Post Available</p>
-            </div>
-          )}
+          <div>
+            {/* posts */}
+            {loading ? (
+              <div className="my-8">
+                <Loading />
+              </div>
+            ) : posts?.length > 0 ? (
+              <div>
+                {posts.map((post, index) => (
+                  <div key={index}>
+                    <PostCard
+                      post={post}
+                      user={user}
+                      deletePost={() => {}}
+                      likePost={() => {}}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex w-full h-full items-center justify-center my-6">
+                <p className="text-lg">No Post Available</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right section */}
@@ -194,8 +226,9 @@ const Home = () => {
             </div>
 
             {/* requests */}
+
             <div className="w-full flex flex-col gap-4 pt-4">
-              {friendRequest?.map(({ _id, requestFrom: data }) => (
+              {requests?.map(({ _id, requestFrom: data }) => (
                 <div key={_id} className="flex justify-between items-center">
                   <Link
                     to={"/profile/" + data._id}
@@ -220,10 +253,29 @@ const Home = () => {
 
                   <div className="flex gap-1">
                     <CustomButton
+                      onClick={() => {
+                        dispatch(
+                          acceptFriendRequest(
+                            { req_id: _id },
+                            token,
+                            setRequests,
+                            setFrnds
+                          )
+                        );
+                      }}
                       title={"Accept"}
                       containerStyles="border border-[#666] text-xs px-1.5 py-1 rounded-full bg-[#0444a4]"
                     />
                     <CustomButton
+                      onClick={() => {
+                        dispatch(
+                          rejectFriendRequest(
+                            { req_id: _id },
+                            token,
+                            setRequests
+                          )
+                        );
+                      }}
                       title={"Deny"}
                       containerStyles="border border-[#666] text-xs px-1.5 py-1 rounded-full"
                     />
@@ -233,6 +285,7 @@ const Home = () => {
             </div>
           </div>
           {/* Suggested friends */}
+
           <div className="w-full bg-richblack-800 shadow-sm rounded-lg px-5 py-5">
             <div className="fex items-center justify-center text-lg border-b border-[#66666645]">
               <span>Friend Suggestion</span>
@@ -265,7 +318,9 @@ const Home = () => {
                   <div className="flex gap-1">
                     <button
                       className="bg-[#0444a430] text-sm text-white p-1 rounded"
-                      onClick={() => {}}
+                      onClick={() => {
+                        dispatch(sendFriendRequest(friend._id, token));
+                      }}
                     >
                       <BsPersonFillAdd size={20} className="text-[#0f52b6]" />
                     </button>

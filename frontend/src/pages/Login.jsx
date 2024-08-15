@@ -10,7 +10,10 @@ import { ImConnection } from "react-icons/im";
 
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../services/operations/authAPI";
+
+import { toast } from "react-hot-toast";
 
 const Login = () => {
   const {
@@ -24,15 +27,15 @@ const Login = () => {
   const [errMsg, setErrMsg] = useState("");
   const [isSubmitting, setisSubmitting] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const onSubmit = async(data)=>{
-    console.log(data);
-  }
+  const onSubmit = async (data) => {
+    dispatch(login(data, navigate));
+  };
 
   return (
     <div className="w-full h-[100vh] bg-richblack-900 flex items-center justify-center p-4">
       <div className="w-full md:2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex bg-richblack-800 rounded-xl overflow-hidden shadow-xl">
-        
         {/* Left */}
         <div className="w-full lg:w-1/2 h-full p-10 2xl:px-20 flex flex-col justify-center">
           <div className="w-full flex gap-2 items-center mb-6">
@@ -40,7 +43,7 @@ const Login = () => {
               <TbSocial />
             </div>
             <span className="text-2xl text-[#065ad8] font-semibold">
-              ShareFun
+              QuickPost
             </span>
           </div>
 
@@ -52,7 +55,10 @@ const Login = () => {
             Welcome Back
           </span>
 
-          <form className="py-8 flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="py-8 flex flex-col gap-5"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <TextInput
               name="email"
               placeholder="email@example.com"
@@ -146,20 +152,17 @@ const Login = () => {
               <AiOutlineInteraction size={14} />
               <span className="text-xs font-medium">Share</span>
             </div>
-
-            
           </div>
           <div className="mt-16 text-center">
-              <p className="text-white text-base">
-                Connect with friends & have share for fun
-              </p>
+            <p className="text-white text-base">
+              Connect with friends & have share for fun
+            </p>
 
-              <span className="text-sm text-white/80">
-                Share memories with friends and the world
-              </span>
-            </div>
+            <span className="text-sm text-white/80">
+              Share memories with friends and the world
+            </span>
+          </div>
         </div>
-
       </div>
     </div>
   );

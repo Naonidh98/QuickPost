@@ -11,10 +11,10 @@ const FriendsCard = ({ friends }) => {
         </div>
 
         <div className="w-full flex flex-col gap-4 pt-4">
-          {friends?.map((friend) => (
+          {friends?.map((friend,index) => (
             <Link
               to={"/profile/" + friend?._id}
-              key={friend?._id}
+              key={index}
               className="w-full flex gap-4 items-center cursor-pointer"
             >
               <img

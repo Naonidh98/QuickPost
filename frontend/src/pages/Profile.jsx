@@ -1,12 +1,20 @@
 import React, { useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { TopBar, ProfileCard, FriendsCard ,PostCard , Loading} from "../components/index";
-import { user,posts } from "../../data/dummyData";
+import {
+  TopBar,
+  ProfileCard,
+  FriendsCard,
+  PostCard,
+  Loading,
+} from "../components/index";
 
 const Profile = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+
+  const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
 
   //GET USER
 
@@ -56,9 +64,10 @@ const Profile = () => {
           </div>
 
           {/* right */}
-          <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
+
+          {/* <div className="hidden w-1/4 h-full lg:flex flex-col gap-8 overflow-y-auto">
             <FriendsCard friends={user?.friends} />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

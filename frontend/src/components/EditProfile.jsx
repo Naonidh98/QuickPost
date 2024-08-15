@@ -1,20 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { user } from "../../data/dummyData";
 import { Loading, TextInput, CustomButton } from "../components/index";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { BiImages } from "react-icons/bi";
 import { IoMdClose } from "react-icons/io";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
+import { updateUser } from "../services/operations/userAPI";
 
 const EditProfile = () => {
   //get user from redux
-
+  const params = useParams();
   const [err, errMsg] = useState("");
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [picture, setPicture] = useState(null);
+
+  const { user,token } = useSelector((state) => state.user);
 
   const {
     register,
@@ -23,8 +27,12 @@ const EditProfile = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    if (picture) {
+      data.profileImg = picture;
+    }
     console.log(data);
-    console.log(picture);
+    
+    dispatch(updateUser(data,token));
   };
 
   return (
@@ -47,7 +55,9 @@ const EditProfile = () => {
         >
           <TextInput
             name="firstName"
-            placeholder="Enter your first name"
+            placeholder={`${
+              user?.firstName ? `${user.firstName}` : "Enter your first name"
+            }`}
             label="First Name"
             labelStyles="text-white ml-2 font-semibold"
             type="text"
@@ -57,7 +67,9 @@ const EditProfile = () => {
           />
           <TextInput
             name="lastName"
-            placeholder="Enter your last name"
+            placeholder={`${
+              user?.lastName ? `${user.lastName}` : "Enter your last name"
+            }`}
             label="Last Name"
             labelStyles="text-white ml-2 font-semibold"
             type="text"
@@ -67,7 +79,9 @@ const EditProfile = () => {
           />
           <TextInput
             name="location"
-            placeholder="Enter your location"
+            placeholder={`${
+              user?.location ? `${user.location}` : "Enter your location"
+            }`}
             label="Location"
             labelStyles="text-white ml-2 font-semibold"
             type="text"
@@ -77,7 +91,9 @@ const EditProfile = () => {
           />
           <TextInput
             name="profession"
-            placeholder="Enter your profession"
+            placeholder={`${
+              user?.profession ? `${user.profession}` : "Enter your profession"
+            }`}
             label="Profession"
             labelStyles="text-white ml-2 font-semibold"
             type="text"
