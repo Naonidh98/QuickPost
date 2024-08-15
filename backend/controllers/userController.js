@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const FriendRequest = require("../models/FriendRequest");
+const { uploadImageToCloudinary } = require("../utils/uploadFile");
+require("dotenv").config;
 
 //get user
 exports.getUser = async (req, res) => {
@@ -41,10 +43,12 @@ exports.updateUser = async (req, res) => {
   try {
     const { _id: userId } = req.user;
 
-    const { firstName, lastName, location, profileUrl, profession } = req.body;
+    const { firstName, lastName, location, profession } = req.body;
+
+    const profileImg = req?.files?.profileImg ?? null;
 
     //validation
-    if (!firstName && !lastName && !location && !profession && !profileUrl) {
+    if (!firstName && !lastName && !location && !profession && !profileImg) {
       return res.status(403).json({
         success: false,
         message: "Please provide at least one field.",
@@ -59,8 +63,13 @@ exports.updateUser = async (req, res) => {
     if (lastName) {
       user.lastName = lastName;
     }
-    if (profileUrl) {
-      user.profileUrl = profileUrl;
+    if (profileImg) {
+      // upload at cloudinary
+      const info = await uploadImageToCloudinary(
+        profileImg,
+        process.env.FOLDER_NAME
+      );
+      user.profileUrl = info.secure_url;
     }
     if (profession) {
       user.profession = profession;
@@ -86,7 +95,7 @@ exports.updateUser = async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       success: false,
-      message: "Somrthing went wrong",
+      message: "Something went wrong",
       error: err.message,
     });
   }
@@ -102,6 +111,14 @@ exports.sendFriendReq = async (req, res) => {
       return res.status(403).json({
         success: false,
         message: "Missing requirements",
+      });
+    }
+
+    const user = await User.findOne({ _id: userId });
+    if (user?.friends.includes(requestTo)) {
+      return res.status(403).json({
+        success: false,
+        message: "Already your friend",
       });
     }
 
@@ -158,7 +175,7 @@ exports.getAllFriendReq = async (req, res) => {
     })
       .populate({
         path: "requestFrom",
-        select: "firstName lastName profession",
+        select: "firstName lastName profession profileUrl",
       })
       .limit(10)
       .sort({
@@ -218,9 +235,18 @@ exports.acceptFriendReq = async (req, res) => {
 
     await FriendRequest.findOneAndDelete({ _id: req_id });
 
+    const data = await FriendRequest.find({ requestTo: userId });
+
+    const data2 = await User.findOne({ _id: userId }).populate({
+      path: "friends",
+      select: "firstName LastName profession profileUrl",
+    });
+
     return res.status(200).json({
       success: true,
       message: "friend added",
+      data,
+      data2: data2.friends,
     });
   } catch (err) {
     return res.status(500).json({
@@ -251,9 +277,12 @@ exports.rejectFriendReq = async (req, res) => {
 
     await FriendRequest.findOneAndDelete({ _id: req_id });
 
+    const data = await FriendRequest.find({ requestTo: userId });
+
     return res.status(200).json({
       success: true,
       message: "Request removed.",
+      data,
     });
   } catch (err) {
     return res.status(500).json({
@@ -304,20 +333,82 @@ exports.profileViews = async (req, res) => {
 //suggested friends
 exports.suggestedFriends = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const { _id: userId } = req.user;
 
-    let queryObj = {};
-    queryObj.id = { $ne: userId };
-    queryObj.friends = { $nin: userId };
+    const user = await User.findOne({ _id: userId });
 
-    let queryResult = await User.find(queryObj)
-      .limit(15)
+    const query = [...user?.friends, userId];
+
+    let queryResult = await User.find({ _id: { $nin: query } })
+      .limit(10)
       .select("firstName lastName profileUrl profession");
 
     return res.status(200).json({
       success: true,
       message: "Suggested frnd are fetched",
       data: queryResult,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: err.message,
+    });
+  }
+};
+
+//user friends
+exports.getMyFriends = async (req, res) => {
+  try {
+    const { _id: userId } = req.user;
+    const user = await User.findOne({ _id: userId }).populate({
+      path: "friends",
+      select: "firstName lastName profession profileUrl",
+    });
+    return res.status(200).json({
+      success: true,
+      message: "User frnds",
+      data: user?.friends,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+      error: err.message,
+    });
+  }
+};
+
+//search query
+exports.searchQuery = async (req, res) => {
+  try {
+    const { query } = req.body;
+
+    if (!query) {
+      return res.status(403).json({
+        success: false,
+        message: "Missing requirements",
+      });
+    }
+
+    const data1 = await User.find({
+      firstName: query,
+    }).select("firstName lastName profileUrl profession ");
+
+    const data2 = await User.find({
+      lastName: query,
+    }).select("firstName lastName profileUrl profession ");
+
+    const data3 = await User.find({
+      email: query,
+    }).select("firstName lastName profileUrl profession ");
+
+    const data = [...data1,...data2,...data3]
+
+    return res.status(200).json({
+      success: true,
+      message: `search result for  : ${query}`,
+      data
     });
   } catch (err) {
     return res.status(500).json({

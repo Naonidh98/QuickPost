@@ -4,9 +4,10 @@ import { Outlet } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 
 //import pages
-import { Home, Login, Profile, Register, ResetPassword ,EmailVerification} from "./pages/index";
+import { Home, Login, Profile, Register, ResetPassword ,EmailVerification,PageNotFound,ForgotPassword} from "./pages/index";
 import { EditProfile } from "./components/index";
 import { useSelector } from "react-redux";
+import SearchResult from "./pages/SearchResult";
 
 //function to check user logged-in or not.
 function Layout() {
@@ -28,6 +29,7 @@ const App = () => {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/profile/:id?" element={<Profile />} />
+          <Route path="/search/:query?" element={<SearchResult />} />
           <Route path="/edit/profile/:id?" element={<EditProfile />} />
         </Route>
 
@@ -35,6 +37,10 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/user/verify/:email/:token" element={<EmailVerification />} />
+        <Route path="/reset/:email/:token" element={< ForgotPassword/>} />
+
+        <Route path="*" element={<PageNotFound/>}/>
+
       </Routes>
     </div>
   );

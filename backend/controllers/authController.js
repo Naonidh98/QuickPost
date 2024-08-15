@@ -86,7 +86,10 @@ exports.login = async (req, res, next) => {
       });
     }
 
-    const exUser = await User.findOne({ email });
+    const exUser = await User.findOne({ email }).populate({
+      path : "friends",
+      select : "firstName lastName profileUrl profession"  
+    });
 
     if (!exUser) {
       return res.status(403).json({

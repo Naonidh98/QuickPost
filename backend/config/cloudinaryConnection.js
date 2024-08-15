@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const cloudinary = require("cloudinary");
+const cloudinary = require('cloudinary').v2
 
 const cloudinaerConnect = async () => {
   try {

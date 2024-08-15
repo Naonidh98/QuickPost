@@ -21,7 +21,7 @@ const TopBar = () => {
   } = useForm();
 
   const handleSearch = async (data) => {
-    console.log(data);
+    navigate(`/search/${data.search}`);
   };
 
   return (
@@ -33,7 +33,7 @@ const TopBar = () => {
         </div>
 
         <span className="text-xl md:text-2xl text-[#065ad8] font-semibold ">
-          Sharefun
+          QuickPost
         </span>
       </Link>
 
