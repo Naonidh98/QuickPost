@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { Routes, Route } from "react-router-dom";
 
 //import pages
-import { Home, Login, Profile, Register, ResetPassword ,EmailVerification,PageNotFound,ForgotPassword} from "./pages/index";
+import { Home, Login,UserReq ,UserFriends,Profile,UserProfile, Register, ResetPassword ,EmailVerification,PageNotFound,ForgotPassword} from "./pages/index";
 import { EditProfile } from "./components/index";
 import { useSelector } from "react-redux";
 import SearchResult from "./pages/SearchResult";
@@ -31,6 +31,11 @@ const App = () => {
           <Route path="/profile/:id?" element={<Profile />} />
           <Route path="/search/:query?" element={<SearchResult />} />
           <Route path="/edit/profile/:id?" element={<EditProfile />} />
+
+          <Route path="/user/profile" element={<UserProfile/>}/>
+          <Route path="/user/req" element={<UserReq/>}/>
+          <Route path="/user/friends" element={<UserFriends/>}/>
+
         </Route>
 
         <Route path="/register" element={<Register />} />
