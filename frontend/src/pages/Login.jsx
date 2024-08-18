@@ -98,7 +98,7 @@ const Login = () => {
 
             {/* Forgot password */}
             <Link
-              to="/"
+              to="/reset-password"
               className="text-sm text-right text-[#065ad8] font-semibold"
             >
               {" "}
