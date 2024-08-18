@@ -35,6 +35,7 @@ const Login = () => {
 
   return (
     <div className="w-full h-[100vh] bg-richblack-900 flex items-center justify-center p-4">
+      {/*
       <div className="bg-white py-2 px-4 absolute top-[10%] left-[40%] rounded flex flex-col gap-4">
         <h2 className="text-center font-bold">DEMO ACCOUNT</h2>
 
@@ -46,6 +47,7 @@ const Login = () => {
           <span className="font-bold">password :</span> <span>123456789</span>
         </p>
       </div>
+      */}
 
       <div className="w-full md:2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex bg-richblack-800 rounded-xl overflow-hidden shadow-xl">
         {/* Left */}
