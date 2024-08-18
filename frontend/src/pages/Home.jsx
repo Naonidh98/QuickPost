@@ -231,7 +231,7 @@ const Home = () => {
               {requests?.map(({ _id, requestFrom: data }) => (
                 <div key={_id} className="flex justify-between items-center">
                   <Link
-                    to={"/profile/" + data._id}
+                    to={"/"}
                     key={_id}
                     className="w-full flex gap-4 item-center cursor-pointer"
                   >
@@ -297,7 +297,7 @@ const Home = () => {
                   className="flex items-center justify-between"
                 >
                   <Link
-                    to={"/profile/" + friend._id}
+                    to={"/"}
                     className="w-full flex gap-4 items-center cursor-pointer"
                   >
                     <img

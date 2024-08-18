@@ -33,7 +33,7 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     //password length is less than 8
-    if (data.password.length < 8) {
+   /* if (data.password.length < 8) {
       toast.error("Password length is less than 8!");
       return;
     }
@@ -43,7 +43,8 @@ const Register = () => {
       return;
     } else {
       dispatch(registerEmail(data));
-    }
+    }*/
+   toast.error("You can't create a new account because it's a demo service.")
   };
 
   return (

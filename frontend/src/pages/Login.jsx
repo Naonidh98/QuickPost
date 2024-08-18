@@ -35,6 +35,18 @@ const Login = () => {
 
   return (
     <div className="w-full h-[100vh] bg-richblack-900 flex items-center justify-center p-4">
+      <div className="bg-white py-2 px-4 absolute top-[10%] left-[40%] rounded flex flex-col gap-4">
+        <h2 className="text-center font-bold">DEMO ACCOUNT</h2>
+
+        <p>
+          <span className="font-bold">email :</span>{" "}
+          <span>user1@gmail.com</span>
+        </p>
+        <p>
+          <span className="font-bold">password :</span> <span>123456789</span>
+        </p>
+      </div>
+
       <div className="w-full md:2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex bg-richblack-800 rounded-xl overflow-hidden shadow-xl">
         {/* Left */}
         <div className="w-full lg:w-1/2 h-full p-10 2xl:px-20 flex flex-col justify-center">
@@ -86,7 +98,7 @@ const Login = () => {
 
             {/* Forgot password */}
             <Link
-              to="/reset-password"
+              to="/"
               className="text-sm text-right text-[#065ad8] font-semibold"
             >
               {" "}

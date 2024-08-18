@@ -97,7 +97,7 @@ exports.getPosts = async (req, res) => {
         },
       })
       .sort({
-        createdAt: -1,
+        _id: -1,
       });
 
     return res.status(200).json({
